@@ -1,6 +1,8 @@
 import { AbilityConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
+import { UserSettingClass } from '../utils/setting';
+import { TOKEN_KEY } from '../constants';
 
 export default class EntryAbility extends UIAbility {
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
@@ -12,38 +14,21 @@ export default class EntryAbility extends UIAbility {
   }
 
   onNewWant(want: Want, launchParam: AbilityConstant.LaunchParam): void {
-    // const toke = AppStorage.get('token') as string;
-    // if (toke) {
-    //
-    // }
   }
 
   onWindowStageCreate(windowStage: window.WindowStage): void {
-    // Main window is created, set main page for this ability
-    hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onWindowStageCreate');
-
-
-    windowStage.loadContent('pages/LoginPage');
-    // windowStage.loadContent('pages/LoginPage', (err) => {
-    //   if (err.code) {
-    //     hilog.error(0x0000, 'testTag', 'Failed to load the content. Cause: %{public}s', JSON.stringify(err) ?? '');
-    //     return;
-    //   }
-    //   hilog.info(0x0000, 'testTag', 'Succeeded in loading the content.');
-    // });
-    // const token = AppStorage.get('token') as string;
-    // // 如果TOKEN有值,跳转到主页,否则跳转到登录页面
-    // if (token) {
-    //
-    // } else {
-    //   windowStage.loadContent('pages/LoginPage', (err) => {
-    //     if (err.code) {
-    //       hilog.error(0x0000, 'testTag', 'Failed to load the content. Cause: %{public}s', JSON.stringify(err) ?? '');
-    //       return;
-    //     }
-    //     hilog.info(0x0000, 'testTag', 'Succeeded in loading the content.');
-    //   });
-    // }
+    // 设置首选项
+    const setting = new UserSettingClass(this.context)
+    // 判断是否有TOKEN
+    const token = setting.getToken()
+    AppStorage.setOrCreate(TOKEN_KEY, token)
+    if (token) {
+      // 需要判断一下有没有token
+      windowStage.loadContent("pages/MainPage") // 正常加载主页
+    } else {
+      windowStage.loadContent("pages/LoginPage") // 跳转到登录
+    }
+    // windowStage.loadContent('pages/LoginPage');
   }
 
   onWindowStageDestroy(): void {

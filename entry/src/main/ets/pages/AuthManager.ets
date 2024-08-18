@@ -1,6 +1,7 @@
 // class 读写首选项
 import { preferences } from '@kit.ArkData'
 
+// 首选项
 export class AuthManager {
   context?: Context
 
@@ -17,7 +18,6 @@ export class AuthManager {
     store.putSync("auth", token)
     // 必须得flush一下
     await store.flush() // 写入磁盘
-
   }
 
   // 获取token

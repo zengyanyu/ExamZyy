@@ -1,6 +1,7 @@
 import { http } from '@kit.NetworkKit';
 import { promptAction, router } from '@kit.ArkUI';
-import { AuthManager } from './AuthManager';
+import { UserSettingClass } from '../utils/setting';
+import { TOKEN_KEY } from '../constants';
 
 @Entry
 @Component
@@ -68,9 +69,11 @@ struct LoginPage {
     req.destroy()
 
     const res = JSON.parse(result.result as string) as ResponseData<TokenObj>
-    promptAction.showToast({ message: res.data!.token })
-    new AuthManager().setToken(res.data!.token) // 设置首选项  为了写入磁盘 为了进入判断
-    AppStorage.setOrCreate<string>("token", res.data!.token) // 用起来很简单
+    // promptAction.showToast({ message: res.data!.token })
+    // 设置首选项
+    new UserSettingClass(getContext()).setToken(res.data!.token)
+    // 设置全局状态
+    AppStorage.setOrCreate(TOKEN_KEY, res.data!.token)
     // 页面跳转
     router.pushUrl({
       url: 'pages/MainPage'
